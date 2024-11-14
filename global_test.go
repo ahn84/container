@@ -3,7 +3,7 @@ package container_test
 import (
 	"testing"
 
-	"github.com/golobby/container/v3"
+	"github.com/ahn84/container/v3"
 	"github.com/stretchr/testify/assert"
 )
 
