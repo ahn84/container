@@ -3,7 +3,7 @@ package container_test
 import (
 	"testing"
 
-	"github.com/ahn84/container/v3"
+	"github.com/ahn84/container"
 	"github.com/stretchr/testify/assert"
 )
 

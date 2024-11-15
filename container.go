@@ -5,6 +5,7 @@ package container
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"reflect"
 	"unsafe"
 )
@@ -247,6 +248,29 @@ func (c Container) NamedResolve(abstraction interface{}, name string) error {
 	}
 
 	return errors.New("container: invalid abstraction")
+}
+
+// ResolveAll takes abstraction as a map[string]any to resolve all instances with given interface
+func (c Container) ResolveAll(abstraction any) error {
+	receiverType := reflect.TypeOf(abstraction)
+	if receiverType == nil {
+		return errors.New("container: invalid abstraction")
+	}
+	mapType := receiverType.Elem()
+	if receiverType.Kind() == reflect.Pointer && mapType.Kind() == reflect.Map {
+		elem := mapType.Elem()
+		eMap := c[elem]
+		result := reflect.MakeMap(reflect.MapOf(reflect.TypeOf(""), elem))
+		for k, v := range maps.All(eMap) {
+			if instance, err := v.make(c); err == nil {
+				result.SetMapIndex(reflect.ValueOf(k), reflect.ValueOf(instance))
+			}
+		}
+		reflect.ValueOf(abstraction).Elem().Set(result)
+		return nil
+	}
+
+	return errors.New("container: invalid abstraction - pointer to map[string]any is required")
 }
 
 // Fill takes a struct and resolves the fields with the tag `container:"inject"`

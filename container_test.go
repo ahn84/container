@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/ahn84/container/v3"
+	"github.com/ahn84/container"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -606,4 +606,29 @@ func TestContainer_Fill_With_Dependency_Missing_In_Chain(t *testing.T) {
 
 	err = instance.Fill(&myApp)
 	assert.EqualError(t, err, "container: no concrete found for: container_test.Shape")
+}
+
+func TestContainer_TestResolveAll(t *testing.T) {
+	err := instance.NamedSingleton("theCircle1", func() Shape {
+		return &Circle{a: 13}
+	})
+	assert.NoError(t, err)
+	err = instance.NamedSingleton("theCircle2", func() Shape {
+		return &Circle{a: 30}
+	})
+	assert.NoError(t, err)
+
+	var shapes map[string]Shape
+	err = instance.ResolveAll(&shapes)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(shapes))
+	for k, v := range shapes {
+		assert.True(t, k == "theCircle1" || k == "theCircle2")
+		if k == "theCircle1" {
+			assert.Equal(t, v.GetArea(), 13)
+		}
+		if k == "theCircle2" {
+			assert.Equal(t, v.GetArea(), 30)
+		}
+	}
 }

@@ -1,6 +1,6 @@
-module github.com/ahn84/container/v3
+module github.com/ahn84/container
 
-go 1.17
+go 1.23
 
 require github.com/stretchr/testify v1.7.0
 
