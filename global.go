@@ -58,6 +58,11 @@ func Resolve(abstraction interface{}) error {
 	return Global.Resolve(abstraction)
 }
 
+// ResolveAll calls the same method of the global concrete.
+func ResolveAll(abstraction interface{}) error {
+	return Global.ResolveAll(abstraction)
+}
+
 // NamedResolve calls the same method of the global concrete.
 func NamedResolve(abstraction interface{}, name string) error {
 	return Global.NamedResolve(abstraction, name)
